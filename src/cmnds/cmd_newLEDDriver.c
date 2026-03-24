@@ -346,15 +346,15 @@ void LED_RunQuickColorLerp(int deltaMS) {
 	}
 
 	for (int i = 0; i < 5; i++) {
-		if (led_rawLerpCurrent[i] != finalColors[i]) {
+		if (roundf(led_rawLerpCurrent[i]) != roundf(finalColors[i])) {
 			color_lerp_finished = false;
 		}
 	}
 
 	// if current Values already match the target, there is
 	// no reason for changing led values
-	if (led_current_value_brightness == target_value_brightness &&
-		led_current_value_cold_or_warm == target_value_cold_or_warm &&
+	if (roundf(led_current_value_brightness) == target_value_brightness &&
+		roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm &&
 		color_lerp_finished) {
         ADDLOG_DEBUG(LOG_FEATURE_CMD, "Not changing LED colors, lerp finished");
 		return;
