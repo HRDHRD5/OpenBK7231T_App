@@ -347,6 +347,7 @@ void LED_RunQuickColorLerp(int deltaMS) {
 
 	for (int i = 0; i < 5; i++) {
 		if (roundf(led_rawLerpCurrent[i]) != roundf(finalColors[i])) {
+			ADDLOG_DEBUG(LOG_FEATURE_CMD, "Color with index %i values: %f - %f", i, led_rawLerpCurrent[i], finalColors[i]);
 			color_lerp_finished = false;
 		}
 	}
