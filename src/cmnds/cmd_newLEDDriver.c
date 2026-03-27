@@ -359,6 +359,9 @@ void LED_RunQuickColorLerp(int deltaMS) {
         ADDLOG_DEBUG(LOG_FEATURE_CMD, "Not changing LED colors, lerp finished");
 		return;
 	}
+	ADDLOG_DEBUG(LOG_FEATURE_CMD, "brightness: %f - %f\ncold_or_warm: %f - %f\nlerp: %i",
+		led_current_value_brightness, target_value_brightness, led_current_value_cold_or_warm,
+		target_value_cold_or_warm, color_lerp_finished);
 	ADDLOG_DEBUG(LOG_FEATURE_CMD, "Changing LED colors, lerp not finished");
 
 	for(i = 0; i < 5; i++) {
