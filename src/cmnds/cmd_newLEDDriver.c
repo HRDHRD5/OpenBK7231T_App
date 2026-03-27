@@ -345,7 +345,7 @@ void LED_RunQuickColorLerp(int deltaMS) {
 		}
 	}
 
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 3; i++) {
 		if (roundf(led_rawLerpCurrent[i]) != roundf(finalColors[i])) {
 			ADDLOG_DEBUG(LOG_FEATURE_CMD, "Color with index %i values: %f - %f", i, led_rawLerpCurrent[i], finalColors[i]);
 			color_lerp_finished = false;
@@ -355,8 +355,8 @@ void LED_RunQuickColorLerp(int deltaMS) {
 	// if current Values already match the target, there is
 	// no reason for changing led values
 	if ((int) roundf(led_current_value_brightness) == target_value_brightness &&
-		(int) roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm &&
-		color_lerp_finished) {
+		((int) roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm ||
+		color_lerp_finished)) {
         ADDLOG_DEBUG(LOG_FEATURE_CMD, "Not changing LED colors, lerp finished");
 		return;
 	}
