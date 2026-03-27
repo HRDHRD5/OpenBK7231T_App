@@ -355,7 +355,9 @@ void LED_RunQuickColorLerp(int deltaMS) {
 	// if current Values already match the target, there is
 	// no reason for changing led values
 	if ((int) roundf(led_current_value_brightness) == target_value_brightness &&
-		((int) roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm ||
+		// do not alter lights if cool/warm lighting or colors are already at target value
+		(((int) roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm &&
+		emulatedCool != -1 && g_lightMode == Light_Temperature) ||
 		color_lerp_finished)) {
         ADDLOG_DEBUG(LOG_FEATURE_CMD, "Not changing LED colors, lerp finished");
 		return;
