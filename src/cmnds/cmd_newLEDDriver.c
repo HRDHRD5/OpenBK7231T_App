@@ -353,13 +353,13 @@ void LED_RunQuickColorLerp(int deltaMS) {
 
 	// if current Values already match the target, there is
 	// no reason for changing led values
-	if (roundf(led_current_value_brightness) == target_value_brightness &&
-		roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm &&
+	if ((int) roundf(led_current_value_brightness) == target_value_brightness &&
+		(int) roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm &&
 		color_lerp_finished) {
         ADDLOG_DEBUG(LOG_FEATURE_CMD, "Not changing LED colors, lerp finished");
 		return;
 	}
-	ADDLOG_DEBUG(LOG_FEATURE_CMD, "brightness: %f - %f\ncold_or_warm: %f - %f\nlerp: %i",
+	ADDLOG_DEBUG(LOG_FEATURE_CMD, "brightness: %f - %i\ncold_or_warm: %f - %i\nlerp: %u",
 		led_current_value_brightness, target_value_brightness, led_current_value_cold_or_warm,
 		target_value_cold_or_warm, color_lerp_finished);
 	ADDLOG_DEBUG(LOG_FEATURE_CMD, "Changing LED colors, lerp not finished");
