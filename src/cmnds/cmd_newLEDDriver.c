@@ -261,7 +261,7 @@ void LED_I2CDriver_WriteRGBCW(float* finalRGBCW) {
 		if (g_lightMode == Light_Temperature) {
 			// the format is RGBCW
 			// Emulate C with RGB
-			LED_CalculateEmulatedCool(finalRGBCW[3], finalRGBCW);
+			LED_CalculateEmulatedCool(finalRGBCW[3] * g_cfg_colorScaleToChannel, finalRGBCW);
 			// keep C unchanged, because it is the lerp value for emulated cool LED
 			// keep W unchanged
 		}
@@ -319,6 +319,7 @@ void LED_RunQuickColorLerp(int deltaMS) {
 	int emulatedCool = -1;
 	int target_value_brightness = 0;
 	int target_value_cold_or_warm = 0;
+	bool color_lerp_finished = true;
 
 	if (CFG_HasFlag(OBK_FLAG_LED_FORCE_MODE_RGB)) {
 		// only allow setting pwm 0, 1 and 2, force-skip 3 and 4
@@ -337,6 +338,27 @@ void LED_RunQuickColorLerp(int deltaMS) {
 		emulatedCool = firstChannelIndex + 3;
 	}
 
+	target_value_cold_or_warm = LED_GetTemperature0to1Range() * 100.0f;
+	if (g_lightEnableAll) {
+		if (g_lightMode == Light_Temperature) {
+			target_value_brightness = g_brightness0to100 * g_brightnessScale;
+		}
+	}
+
+	for (int i = 0; i < 5; i++) {
+		if (roundf(led_rawLerpCurrent[i]) != roundf(finalColors[i])) {
+			color_lerp_finished = false;
+		}
+	}
+
+	// if current Values already match the target, there is
+	// no reason for changing led values
+	if ((int) roundf(led_current_value_brightness) == target_value_brightness &&
+		(int) roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm &&
+		color_lerp_finished) {
+        return;
+	}
+
 	for(i = 0; i < 5; i++) {
 		// Directional lerp: apply rgb calibration correction to the step size only when ramping UP.
 		// This keeps channels visually tracking together during fade-in (corrected channel raw value
@@ -348,13 +370,6 @@ void LED_RunQuickColorLerp(int deltaMS) {
 		float bRampingUp = (led_rawLerpCurrent[i] < finalColors[i]) ? 1.0f : 0.0f;
 		float directedCal = 1.0f + (ch_rgb_cal - 1.0f) * bRampingUp; // = ch_rgb_cal when up, = 1.0 when down
 		led_rawLerpCurrent[i] = Mathf_MoveTowards(led_rawLerpCurrent[i], finalColors[i], deltaSeconds * led_lerpSpeedUnitsPerSecond * directedCal);
-	}
-
-	target_value_cold_or_warm = LED_GetTemperature0to1Range() * 100.0f;
-	if (g_lightEnableAll) {
-		if (g_lightMode == Light_Temperature) {
-			target_value_brightness = g_brightness0to100 * g_brightnessScale;
-		}
 	}
 
 	led_current_value_brightness = Mathf_MoveTowards(led_current_value_brightness, target_value_brightness, deltaSeconds * led_lerpSpeedUnitsPerSecond);
@@ -389,6 +404,8 @@ void LED_RunQuickColorLerp(int deltaMS) {
 				// emulated cool is -1 by default, so this block will only execute
 				// if the cool emulation was enabled
 				if (channelToUse == emulatedCool && g_lightMode == Light_Temperature) {
+					// setting rgb values of cold warm emulation as target value for next tick
+					LED_CalculateEmulatedCool(chVal, finalColors);
 					LED_ApplyEmulatedCool(firstChannelIndex, chVal);
 				}
 				else {
