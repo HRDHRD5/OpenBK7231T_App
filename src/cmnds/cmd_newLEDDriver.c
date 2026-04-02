@@ -243,11 +243,10 @@ void LED_CalculateEmulatedCool(float inCool, float *outRGB) {
 }
 
 void LED_ApplyEmulatedCool(int firstChannelIndex, float chVal) {
-	float rgb[3];
-	LED_CalculateEmulatedCool(chVal, rgb);
-	CHANNEL_Set_FloatPWM(firstChannelIndex + 0, rgb[0], CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
-	CHANNEL_Set_FloatPWM(firstChannelIndex + 1, rgb[1], CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
-	CHANNEL_Set_FloatPWM(firstChannelIndex + 2, rgb[2], CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
+	LED_CalculateEmulatedCool(chVal, finalColors);
+	CHANNEL_Set_FloatPWM(firstChannelIndex + 0, finalColors[0], CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
+	CHANNEL_Set_FloatPWM(firstChannelIndex + 1, finalColors[1], CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
+	CHANNEL_Set_FloatPWM(firstChannelIndex + 2, finalColors[2], CHANNEL_SET_FLAG_SKIP_MQTT | CHANNEL_SET_FLAG_SILENT);
 }
 
 void LED_I2CDriver_WriteRGBCW(float* finalRGBCW) {
