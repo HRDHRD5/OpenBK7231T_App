@@ -347,7 +347,6 @@ void LED_RunQuickColorLerp(int deltaMS) {
 
 	for (int i = 0; i < 5; i++) {
 		if (roundf(led_rawLerpCurrent[i]) != roundf(finalColors[i])) {
-			ADDLOG_DEBUG(LOG_FEATURE_CMD, "Color with index %i values: %f - %f", i, led_rawLerpCurrent[i], finalColors[i]);
 			color_lerp_finished = false;
 		}
 	}
@@ -357,13 +356,8 @@ void LED_RunQuickColorLerp(int deltaMS) {
 	if ((int) roundf(led_current_value_brightness) == target_value_brightness &&
 		(int) roundf(led_current_value_cold_or_warm) == target_value_cold_or_warm &&
 		color_lerp_finished) {
-        ADDLOG_DEBUG(LOG_FEATURE_CMD, "Not changing LED colors, lerp finished");
-		return;
+        return;
 	}
-	ADDLOG_DEBUG(LOG_FEATURE_CMD, "brightness: %f - %i\ncold_or_warm: %f - %i\nlerp: %u",
-		led_current_value_brightness, target_value_brightness, led_current_value_cold_or_warm,
-		target_value_cold_or_warm, color_lerp_finished);
-	ADDLOG_DEBUG(LOG_FEATURE_CMD, "Changing LED colors, lerp not finished");
 
 	for(i = 0; i < 5; i++) {
 		// Directional lerp: apply rgb calibration correction to the step size only when ramping UP.
