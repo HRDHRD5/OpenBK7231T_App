@@ -260,7 +260,7 @@ void LED_I2CDriver_WriteRGBCW(float* finalRGBCW) {
 		if (g_lightMode == Light_Temperature) {
 			// the format is RGBCW
 			// Emulate C with RGB
-			LED_CalculateEmulatedCool(finalRGBCW[3], finalRGBCW);
+			//LED_CalculateEmulatedCool(finalRGBCW[3], finalRGBCW);
 			// keep C unchanged, because it is the lerp value for emulated cool LED
 			// keep W unchanged
 		}
