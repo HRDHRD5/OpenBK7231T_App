@@ -410,6 +410,8 @@ void LED_RunQuickColorLerp(int deltaMS) {
 				// emulated cool is -1 by default, so this block will only execute
 				// if the cool emulation was enabled
 				if (channelToUse == emulatedCool && g_lightMode == Light_Temperature) {
+					// setting rgb values of cold warm emulation as target value for next tick
+					LED_CalculateEmulatedCool(chVal, finalColors);
 					LED_ApplyEmulatedCool(firstChannelIndex, chVal);
 				}
 				else {
